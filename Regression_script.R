@@ -108,4 +108,36 @@ dev.off()
 stdRes = rstandard(reg)
 qqnorm(stdRes,ylab="Standardized Residuals", xlab="Theoretical Quantiles")
 qqline(stdRes, col=2,lwd=2)
+dev.copy(png, "qqplot_income.png")
+dev.off
+hist(stdRes)
+
+reg2 <- lm(data$mortpay ~ data$sqfoot)
+abline(reg2, col="red", lwd=3) 
+predicted2<-predict.lm(reg2)
+residuals2<-data$mortpay-predicted2
+plot(predicted2,residuals2,cex=2,cex.lab=1.5,cex.axis=1.15, ylab=" Residuals", xlab= "Predicted Y")
+abline(a=0,b=0, col="red", lwd=3,lty="dashed")
+dev.copy(png, "residuals_vs_predicted_sqfoot.png")
+dev.off()
+stdRes2 = rstandard(reg2)
+qqnorm(stdRes2,ylab="Standardized Residuals", xlab="Theoretical Quantiles")
+qqline(stdRes2, col=2,lwd=2)
+dev.copy(png, "qqplot_sqfoot.png")
+dev.off
+hist(stdRes)
+
+reg3 <- lm(data$mortpay ~ data$age)
+abline(reg3, col="red", lwd=3) 
+predicted3<-predict.lm(reg3)
+residuals3<-data$mortpay-predicted3
+plot(predicted3,residuals3,cex=2,cex.lab=1.5,cex.axis=1.15, ylab=" Residuals", xlab= "Predicted Y")
+abline(a=0,b=0, col="red", lwd=3,lty="dashed")
+dev.copy(png, "residuals_vs_predicted_sqfoot.png")
+dev.off()
+stdRes2 = rstandard(reg2)
+qqnorm(stdRes2,ylab="Standardized Residuals", xlab="Theoretical Quantiles")
+qqline(stdRes2, col=2,lwd=2)
+dev.copy(png, "qqplot_sqfoot.png")
+dev.off
 hist(stdRes)
