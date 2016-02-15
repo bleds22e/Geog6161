@@ -45,27 +45,28 @@ ggsave(file = "mortpay_vs_age.png", width = 5, height = 5)
 
 # histograms of independent variables
 ggplot(data, aes(x = income)) +
-  geom_histogram() +
+  geom_histogram(binwidth = 5) +
   xlab("Household Disposable Income ($1000)") +
   ylab("Frequency") 
 
 ggplot(data, aes(x = sqfoot)) +
-  geom_histogram() +
+  geom_histogram(binwidth = 100) +
   xlab("Square Footage") +
   ylab("Frequency") 
 
 ggplot(data, aes(x = age)) +
-  geom_histogram() +
+  geom_histogram(binwidth = 1) +
   xlab("Age of Housing Unit (Years)") +
   ylab("Frequency") 
 
 # log transform variables
 data <- select(data, obs:age) %>% 
         mutate(log_income = log(income)) %>% 
-        mutate(log_sqfoot = log(sqfoot))
+        mutate(log_sqfoot = log(sqfoot)) %>% 
+        mutate(log_mortpay = log(mortpay))
 
 # sqrt transform
-data <- select(data, obs:log_sqfoot) %>% 
+data <- select(data, obs:log_mortpay) %>% 
         mutate(sq_income = sqrt(income)) %>% 
         mutate(sq_sqfoot = sqrt(sqfoot)) %>% 
         mutate(recip_income = (1/income)) %>% 
@@ -84,10 +85,16 @@ data <- select(data, obs:cube_root_age) %>%
         mutate(recip_root_sqfoot = sqfoot^(-.5)) %>% 
         mutate(recip_sq_income = income^(-2)) %>% 
         mutate(recip_sq_sqfoot = sqfoot^(-2)) %>% 
-        mutate(income3 = income^3)
+        mutate(income3 = income^3) %>% 
+        mutate(recip_income = income^(-1)) %>% 
+        mutate(recip_trio_income = income^(-1/3)) %>% 
+        mutate(recip_quart_income = income^(-1/4)) %>%
+        mutate(income2half = income^(2.5)) %>% 
+        mutate(recip_age3 = 1/age3)
+      
   
-plot(data = data, mortpay ~ sqfoot2)
-hist(data$log10_mortpay)
+plot(data = data, log10_mortpay ~ recip_age3)
+hist(data$income)
 
 ggplot(data, aes(x = age, y = mortpay)) +
   geom_point(size = 2) +
@@ -97,12 +104,15 @@ ggplot(data, aes(x = age, y = mortpay)) +
   theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), panel.grid.major = element_line(colour = "light gray"))
 
 # look at predicted vs residuals
+plot(data$mortpay ~ data$income, xlab = "Household Disposable Income ($1000)", ylab = "Monthly Mortgage Payment ($)")
 reg <- lm(data$mortpay ~ data$income)
 abline(reg, col="red", lwd=3) 
 predicted<-predict.lm(reg)
 residuals<-data$mortpay-predicted
 plot(predicted,residuals,cex=2,cex.lab=1.5,cex.axis=1.15, ylab=" Residuals", xlab= "Predicted Y")
 abline(a=0,b=0, col="red", lwd=3,lty="dashed")
+pred_res <- cbind(predicted, residuals)
+as.data.frame(pred_res)
 dev.copy(png, "residuals_vs_predicted_income.png")
 dev.off()
 stdRes = rstandard(reg)
@@ -141,3 +151,8 @@ qqline(stdRes2, col=2,lwd=2)
 dev.copy(png, "qqplot_sqfoot.png")
 dev.off
 hist(stdRes)
+
+ggplot(pred_res, aes(x = predicted, y = residuals)) +
+ gg_hline(yintercept = 0) +
+  theme(panel.background = element_blank(), axis.line = element_line(colour = "black"))
+        
