@@ -65,12 +65,12 @@ data <- select(data, obs:age) %>%
 
 ### run regressions and plot pred. vs redis. & qqplots for NON-transformed variables
 ## income regression
-plot(log10_mortpay ~ income_cube, data = data)
-reg_income <- lm(log10_mortpay ~ income_cube, data = data)
+plot(mortpay ~ income, data = data)
+reg_income <- lm(mortpay ~ income, data = data)
 abline(reg_income, col="red", lwd=3)
 
 predicted_income<-predict.lm(reg_income)
-residuals_income<-data$log10_mortpay-predicted_income
+residuals_income<-data$mortpay - predicted_income
 plot(predicted_income,residuals_income,cex=2,cex.lab=1.5,cex.axis=1.15, ylab=" Residuals", xlab= "Predicted Y")
 abline(a=0,b=0, col="red", lwd=3,lty="dashed")
 
@@ -104,12 +104,12 @@ ggQQ <- function(LM) # argument: a linear model
 ggQQ(reg_income)
 
 ## sqfoot regression
-plot(log10_mortpay ~ sqfoot, data = data)
-reg_sqfoot <- lm(log10_mortpay ~ sqfoot, data = data)
+plot(mortpay ~ sqfoot, data = data)
+reg_sqfoot <- lm(mortpay ~ sqfoot, data = data)
 abline(reg_sqfoot, col="red", lwd=3)
 
 predicted_sqfoot <- predict.lm(reg_sqfoot)
-residuals_sqfoot <- data$log10_mortpay-predicted_sqfoot
+residuals_sqfoot <- data$mortpay-predicted_sqfoot
 plot(predicted_sqfoot,residuals_sqfoot,cex=2,cex.lab=1.5,cex.axis=1.15, ylab=" Residuals", xlab= "Predicted Y")
 abline(a=0,b=0, col="red", lwd=3,lty="dashed")
 
@@ -143,12 +143,12 @@ ggQQ <- function(LM) # argument: a linear model
 ggQQ(reg_sqfoot)
 
 # age regression
-plot(log10_mortpay ~ age_cube_root, data = data)
-reg_age <- lm(log10_mortpay ~ age_cube_root, data = data)
+plot(mortpay ~ age, data = data)
+reg_age <- lm(mortpay ~ age, data = data)
 abline(reg_age, col="red", lwd=3)
 
 predicted_age <- predict.lm(reg_age)
-residuals_age <- data$log10_mortpay-predicted_age
+residuals_age <- data$mortpay-predicted_age
 plot(predicted_age,residuals_age,cex=2,cex.lab=1.5,cex.axis=1.15, ylab=" Residuals", xlab= "Predicted Y")
 abline(a=0,b=0, col="red", lwd=3,lty="dashed")
 
