@@ -1,7 +1,6 @@
 # load library
 library(dplyr)
 library(ggplot2)
-library(png)
 
 # read in file
 data <- read.csv(file = "Lab_data.csv", header = TRUE)
@@ -62,6 +61,31 @@ data <- select(data, obs:age) %>%
   mutate(income_cube = income^3) %>% 
   mutate(age_cube_root = age^(-1/3)) %>% 
   mutate(log10_mortpay = log10(mortpay))
+
+# scatterplots of variables against Y -- TRANSFORMED
+ggplot(data, aes(x = income_cube, y = log10_mortpay)) +
+  geom_point(size = 2) +
+  geom_smooth(method = lm) +
+  xlab("Household Disposable Income ($1000)") +
+  ylab("Monthly Mortgage Payment ($)") + 
+  theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), panel.grid.major = element_line(colour = "light gray"))
+ggsave(file = "mortpay_vs_income_trans.png", width = 5, height = 5)
+
+ggplot(data, aes(x = sqfoot, y = log10_mortpay)) +
+  geom_point(size = 2) +
+  geom_smooth(method = lm) +
+  xlab("Square Footage") +
+  ylab("Monthly Mortgage Payment ($)") + 
+  theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), panel.grid.major = element_line(colour = "light gray"))
+ggsave(file = "mortpay_vs_sqfoot_trans.png", width = 5, height = 5)
+
+ggplot(data, aes(x = age_cube_root, y = log10_mortpay)) +
+  geom_point(size = 2) +
+  geom_smooth(method = lm) +
+  xlab("Age of Housing Unit (Years)") +
+  ylab("Monthly Mortgage Payment ($)") + 
+  theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), panel.grid.major = element_line(colour = "light gray"))
+ggsave(file = "mortpay_vs_age_trans.png", width = 5, height = 5)
 
 ### run regressions and plot pred. vs redis. & qqplots for NON-transformed variables
 ## income regression
@@ -186,7 +210,7 @@ ggQQ(reg_age)
 ## income regression
 plot(log10_mortpay ~ income_cube, data = data)
 reg_income_trans <- lm(log10_mortpay ~ income_cube, data = data)
-abline(reg_income, col="red", lwd=3)
+abline(reg_income_trans, col="red", lwd=3)
 
 predicted_income_trans <- predict.lm(reg_income_trans)
 residuals_income_trans <- data$log10_mortpay-predicted_income_trans
