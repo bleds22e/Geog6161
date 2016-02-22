@@ -156,3 +156,24 @@ ggplot(pred_res, aes(x = predicted, y = residuals)) +
  gg_hline(yintercept = 0) +
   theme(panel.background = element_blank(), axis.line = element_line(colour = "black"))
         
+
+# how to make a QQ plot in ggplot2
+# qqplot in ggplot2
+ggQQ <- function(LM) # argument: a linear model
+{
+  y <- quantile(LM$resid[!is.na(LM$resid)], c(0.25, 0.75))
+  x <- qnorm(c(0.25, 0.75))
+  slope <- diff(y)/diff(x)
+  int <- y[1L] - slope * x[1L]
+  p <- ggplot(LM, aes(sample = .resid)) +
+    stat_qq(alpha = 0.5) +
+    geom_abline(slope = slope, intercept = int, color="red", size = 1) +
+    xlab("Theoretical Quantiles") +
+    ylab("Standardized Residuals") +
+    ggtitle("Normal Q-Q Plot") +
+    theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), axis.title = element_text(size=14), plot.title = element_text(size = 18, face = "bold"))
+  ggsave(filename = "age_qq_transformed.png", width = 5, height = 5)
+  return(p)
+}
+
+ggQQ(reg_age_trans)
