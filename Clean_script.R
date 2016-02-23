@@ -71,3 +71,6 @@ data$ln_mortpay <-
 
 hist(data$boxcox_Y)
 plot(boxcox_Y ~ sqfoot, data = data)
+plot(boxcox_Y ~ income, data = data)
+
+# trying
