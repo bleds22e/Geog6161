@@ -67,10 +67,59 @@ ggplot(data, aes(x = age)) +
 # optimizing Box-Cox
 lambda <- BoxCox.lambda(x = data$mortpay)
 data$boxcox_Y <- BoxCox(data$mortpay, lambda)
-data$ln_mortpay <- 
 
 hist(data$boxcox_Y)
-plot(boxcox_Y ~ sqfoot, data = data)
+plot(ln_mortpay ~ sqfoot, data = data)
+plot(log_mortpay ~ sqfoot, data = data)
+plot(ln_mortpay ~ income, data = data)
+plot(log_mortpay ~ income, data = data)
+plot(ln_mortpay ~ age, data = data)
 plot(boxcox_Y ~ income, data = data)
 
-# trying
+# trying ln and log10
+data$ln_mortpay <- log(data$mortpay)
+data$log_mortpay <- log10(data$mortpay)
+
+# scatterplots with ln transformed Y
+ggplot(data, aes(x = income, y = ln_mortpay)) +
+  geom_point(size = 2) +
+  geom_smooth() +
+  xlab("Household Disposable Income ($1000)") +
+  ylab("ln(Monthly Mortgage Payment ($))") + 
+  theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), panel.grid.major = element_line(colour = "light gray"))
+ggsave(file = "ln_mortpay_vs_income.png", width = 5, height = 5)
+
+ggplot(data, aes(x = sqfoot, y = ln_mortpay)) +
+  geom_point(size = 2) +
+  geom_smooth() +
+  xlab("Square Footage") +
+  ylab("ln(Monthly Mortgage Payment ($))") + 
+  theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), panel.grid.major = element_line(colour = "light gray"))
+ggsave(file = "ln_mortpay_vs_sqfoot.png", width = 5, height = 5)
+
+ggplot(data, aes(x = age, y = ln_mortpay)) +
+  geom_point(size = 2) +
+  geom_smooth() +
+  xlab("Age of Housing Unit (Years)") +
+  ylab("ln(Monthly Mortgage Payment ($))") + 
+  theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), panel.grid.major = element_line(colour = "light gray"))
+ggsave(file = "ln_mortpay_vs_age.png", width = 5, height = 5)
+
+ggplot(data, aes(factor(mort_type), ln_mortpay)) +
+  geom_boxplot() +
+  ylab("ln(Monthly Mortgage Payment ($))") +
+  xlab("Mortgage Type") + 
+  theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), panel.grid.major = element_blank())
+ggsave(file = "ln_mortpay_vs_type.png", width = 5, height = 5)
+
+# create variables to include in regression analysis
+
+data$ln_Y <- log(data$Y)
+data$X1sq <- data$X1^2
+data$X2sq <- data$X2^2
+data$Asq <- data$A^2
+data$Acube <- data$A^3
+
+# create full regression model
+ 
+mort_mod <- lm(ln_Y ~ X1 + X2 + X3 + A + X1sq + X2sq + Asq + Acube + X1:X3 + X2:X3 + )
