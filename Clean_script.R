@@ -219,6 +219,9 @@ summary(next_mod)
 
 predicted<-predict.lm(mod2)
 residuals<-data$ln_Y-predicted
+as.data.frame(c(predicted, residuals))
+pred_res <- data_frame(predicted, residuals)
+pred_res
 
 ##  plot residuals vs. the predicted values:
 plot(predicted,residuals,cex=2,cex.lab=1.5,cex.axis=1.15, ylab=" Residuals", xlab= "Predicted Y")
@@ -242,3 +245,38 @@ plot(predicted,residuals,cex=2,cex.lab=1.5,cex.axis=1.15, ylab=" Residuals", xla
 abline(a=0,b=0, col="red", lwd=3,lty="dashed")
 dev.copy(png, "pred_vs_resid_mod2.png")
 dev.off()
+
+# assumptions
+shapiro.test(residuals)
+
+leveneTest(mod2)
+
+install.packages("lmtest")
+library(lmtest)
+bptest(mod2)
+
+influence <- influence.measures(mod2)
+influence
+write.csv(influence, "influence.csv")
+as.data.frame(influence)
+
+influence$cook.d
+inf_list <- as.list(influence)
+inf_list
+as.data.frame(inf_list)
+
+as.table(influence)
+write.table(influence, "influence.txt")
+
+plot(data$ln_Y ~ predicted)
+dev.copy(png, "ln_Y_vs_pred.png")
+dev.off
+abline(y = x)
+
+data_full <- bind_cols(data, pred_res)
+data_full
+ggplot(data_full, (aes(x = predicted, y = ln_Y))) + 
+  geom_point(size = 3) +
+  ylab("ln(Y)") +
+  xlab("Predicted Values")
+ggsave(file = "lnY_vs_pred.png", width = 5, height = 5)
