@@ -172,8 +172,9 @@ ggQQ <- function(LM) # argument: a linear model
     ylab("Standardized Residuals") +
     ggtitle("Normal Q-Q Plot") +
     theme(panel.background = element_blank(), axis.line = element_line(colour = "black"), axis.title = element_text(size=14), plot.title = element_text(size = 18, face = "bold"))
-  ggsave(filename = "age_qq_transformed.png", width = 5, height = 5)
+  ggsave(filename = "qq_mod2.png", width = 5, height = 5)
   return(p)
 }
 
-ggQQ(reg_age_trans)
+ggQQ(mod2)
+
