@@ -280,3 +280,14 @@ ggplot(data_full, (aes(x = predicted, y = ln_Y))) +
   ylab("ln(Y)") +
   xlab("Predicted Values")
 ggsave(file = "lnY_vs_pred.png", width = 5, height = 5)
+
+newdata <- data.frame(ln_Y = 25, X1 = 45, X2 = 1370, X3 = 0, X2sq = 1876900, Acube = 125)
+newdata
+predict(mod2, newdata, interval = "confidence", level = .95)
+
+k2=summary(mod2)
+k2$coefficients[2,1]/k2$coefficients[2,2]
+
+#calculate 95% confidence interval for slope
+k2$coefficients[2,1]+1.96*k2$coefficients[2,2]
+k2$coefficients[2,1]-1.96*k2$coefficients[2,2]
